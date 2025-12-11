@@ -207,7 +207,7 @@ private fun StatsRow(
         }
         item {
             StatCard(
-                icon = Icons.Default.TrendingUp,
+                icon = Icons.AutoMirrored.Filled.TrendingUp,
                 value = "Lvl $level",
                 label = "Level",
                 color = MaterialTheme.colorScheme.primary
