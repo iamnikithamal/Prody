@@ -76,7 +76,7 @@ private fun ProdiWidgetContent(
                 .fillMaxSize()
                 .background(GlanceTheme.colors.surface)
                 .cornerRadius(16.dp)
-                .clickable(actionStartActivity(MainActivity::class.java)),
+                .clickable(actionStartActivity(Intent(LocalContext.current, MainActivity::class.java))),
             contentAlignment = Alignment.Center
         ) {
             when {
@@ -190,7 +190,7 @@ private fun MediumWidget(
                 .width(1.dp)
                 .height(50.dp)
                 .background(GlanceTheme.colors.outline)
-        )
+        ) {}
 
         // Right: Level & Today
         Column(
