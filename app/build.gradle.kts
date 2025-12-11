@@ -26,10 +26,18 @@ android {
 
     signingConfigs {
         create("release") {
-            val keystoreFile = findProperty("PRODY_KEYSTORE_FILE")?.toString() ?: "../keystore/prody-release.jks"
-            val keystorePassword = findProperty("PRODY_KEYSTORE_PASSWORD")?.toString() ?: ""
-            val keyAliasName = findProperty("PRODY_KEY_ALIAS")?.toString() ?: "prody"
-            val keyPass = findProperty("PRODY_KEY_PASSWORD")?.toString() ?: ""
+            val keystoreFile = findProperty("PRODY_KEYSTORE_FILE")?.toString()
+                ?: System.getenv("PRODY_KEYSTORE_FILE")
+                ?: "../keystore/prody-release.jks"
+            val keystorePassword = findProperty("PRODY_KEYSTORE_PASSWORD")?.toString()
+                ?: System.getenv("PRODY_KEYSTORE_PASSWORD")
+                ?: ""
+            val keyAliasName = findProperty("PRODY_KEY_ALIAS")?.toString()
+                ?: System.getenv("PRODY_KEY_ALIAS")
+                ?: "prody"
+            val keyPass = findProperty("PRODY_KEY_PASSWORD")?.toString()
+                ?: System.getenv("PRODY_KEY_PASSWORD")
+                ?: ""
 
             storeFile = file(keystoreFile)
             storePassword = keystorePassword
