@@ -26,10 +26,15 @@ android {
 
     signingConfigs {
         create("release") {
-            storeFile = file("../keystore/prody-release.jks")
-            storePassword = "prody2024"
-            keyAlias = "prody"
-            keyPassword = "prody2024"
+            val keystoreFile = findProperty("PRODY_KEYSTORE_FILE")?.toString() ?: "../keystore/prody-release.jks"
+            val keystorePassword = findProperty("PRODY_KEYSTORE_PASSWORD")?.toString() ?: ""
+            val keyAliasName = findProperty("PRODY_KEY_ALIAS")?.toString() ?: "prody"
+            val keyPass = findProperty("PRODY_KEY_PASSWORD")?.toString() ?: ""
+
+            storeFile = file(keystoreFile)
+            storePassword = keystorePassword
+            keyAlias = keyAliasName
+            keyPassword = keyPass
         }
     }
 
@@ -108,4 +113,11 @@ dependencies {
 
     // WorkManager for notifications
     implementation(libs.androidx.work.runtime.ktx)
+
+    // Timber for logging
+    implementation(libs.timber)
+
+    // Glance for widgets
+    implementation(libs.androidx.glance)
+    implementation(libs.androidx.glance.material3)
 }

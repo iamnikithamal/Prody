@@ -97,6 +97,9 @@ interface FutureSelfDao {
     @Query("SELECT COUNT(*) FROM future_self_letters")
     fun observeTotalCount(): Flow<Int>
 
+    @Query("SELECT COUNT(*) FROM future_self_letters")
+    suspend fun getTotalLetterCount(): Int
+
     @Query("SELECT COUNT(*) FROM future_self_letters WHERE isDelivered = 0")
     fun observePendingCount(): Flow<Int>
 

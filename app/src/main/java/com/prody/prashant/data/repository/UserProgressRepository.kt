@@ -360,6 +360,19 @@ class UserProgressRepository(
         }
         return calendar.timeInMillis
     }
+
+    // ==================== Reset/Clear Operations ====================
+
+    /**
+     * Clears all progress including XP, streaks, badges, and daily activities.
+     * Preserves user profile name and bio, as well as content data (journals, vocabulary, etc.)
+     */
+    suspend fun clearAllProgress() {
+        userProgressDao.resetUserProgress()
+        userProgressDao.resetAllBadges()
+        userProgressDao.clearAllDailyActivities()
+        userProgressDao.clearAllXpTransactions()
+    }
 }
 
 data class XpAwardResult(

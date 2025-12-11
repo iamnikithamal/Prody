@@ -7,12 +7,14 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
-import androidx.navigation.NavDestination.Companion.hierarchy
 import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
+import com.prody.prashant.navigation.ProdiDestinations
 import com.prody.prashant.navigation.ProdiNavHost
 import com.prody.prashant.navigation.bottomNavItems
+import com.prody.prashant.notification.NotificationActionReceiver
+import timber.log.Timber
 
 /**
  * Main screen with bottom navigation bar.
@@ -20,10 +22,34 @@ import com.prody.prashant.navigation.bottomNavItems
  */
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun MainScreen() {
+fun MainScreen(
+    initialDeepLinkDestination: String? = null,
+    initialEntityId: Long = -1L,
+    onDeepLinkConsumed: () -> Unit = {}
+) {
     val navController = rememberNavController()
     val navBackStackEntry by navController.currentBackStackEntryAsState()
     val currentDestination = navBackStackEntry?.destination
+
+    // Handle deep link navigation
+    LaunchedEffect(initialDeepLinkDestination) {
+        if (initialDeepLinkDestination != null) {
+            Timber.d("Processing deep link: $initialDeepLinkDestination, entityId: $initialEntityId")
+
+            val route = mapDeepLinkToRoute(initialDeepLinkDestination, initialEntityId)
+            if (route != null) {
+                try {
+                    navController.navigate(route) {
+                        launchSingleTop = true
+                    }
+                    Timber.d("Navigated to: $route")
+                } catch (e: Exception) {
+                    Timber.e(e, "Failed to navigate to $route")
+                }
+            }
+            onDeepLinkConsumed()
+        }
+    }
 
     // Determine if we should show the bottom bar
     val showBottomBar = remember(currentDestination) {
@@ -60,6 +86,40 @@ fun MainScreen() {
             navController = navController,
             innerPadding = innerPadding
         )
+    }
+}
+
+/**
+ * Maps a deep link destination to the appropriate navigation route.
+ */
+private fun mapDeepLinkToRoute(destination: String, entityId: Long): String? {
+    return when (destination) {
+        NotificationActionReceiver.DESTINATION_HOME -> ProdiDestinations.HOME
+        NotificationActionReceiver.DESTINATION_LEARN -> ProdiDestinations.LEARN
+        NotificationActionReceiver.DESTINATION_JOURNAL -> ProdiDestinations.JOURNAL
+        NotificationActionReceiver.DESTINATION_BUDDHA -> ProdiDestinations.BUDDHA
+        NotificationActionReceiver.DESTINATION_STATS -> ProdiDestinations.STATS
+        NotificationActionReceiver.DESTINATION_FUTURE_SELF -> {
+            if (entityId > 0) {
+                ProdiDestinations.FUTURE_SELF_DETAIL.replace("{id}", entityId.toString())
+            } else {
+                ProdiDestinations.FUTURE_SELF
+            }
+        }
+        NotificationActionReceiver.DESTINATION_VOCABULARY_PRACTICE -> ProdiDestinations.VOCABULARY_PRACTICE
+        NotificationActionReceiver.DESTINATION_JOURNAL_NEW -> ProdiDestinations.JOURNAL_NEW
+
+        // Legacy destination names (used in old notifications)
+        "learn" -> ProdiDestinations.LEARN
+        "journal" -> ProdiDestinations.JOURNAL
+        "buddha" -> ProdiDestinations.BUDDHA
+        "future_self" -> ProdiDestinations.FUTURE_SELF
+        "stats" -> ProdiDestinations.STATS
+
+        else -> {
+            Timber.w("Unknown deep link destination: $destination")
+            null
+        }
     }
 }
 

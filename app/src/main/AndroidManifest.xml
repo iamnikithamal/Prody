@@ -59,10 +59,46 @@
             </intent-filter>
         </receiver>
 
-        <!-- Notification action receiver -->
+        <!-- Notification action receiver for handling notification button clicks -->
         <receiver
             android:name=".notification.NotificationActionReceiver"
-            android:exported="false" />
+            android:exported="false">
+            <intent-filter>
+                <action android:name="com.prody.prashant.notification.DISMISS" />
+                <action android:name="com.prody.prashant.notification.SNOOZE" />
+                <action android:name="com.prody.prashant.notification.OPEN_LEARN" />
+                <action android:name="com.prody.prashant.notification.OPEN_JOURNAL" />
+                <action android:name="com.prody.prashant.notification.OPEN_BUDDHA" />
+                <action android:name="com.prody.prashant.notification.OPEN_FUTURE_SELF" />
+                <action android:name="com.prody.prashant.notification.OPEN_STATS" />
+                <action android:name="com.prody.prashant.notification.QUICK_LEARN" />
+                <action android:name="com.prody.prashant.notification.NEW_JOURNAL" />
+            </intent-filter>
+        </receiver>
+
+        <!-- FileProvider for sharing exported files -->
+        <provider
+            android:name="androidx.core.content.FileProvider"
+            android:authorities="${applicationId}.fileprovider"
+            android:exported="false"
+            android:grantUriPermissions="true">
+            <meta-data
+                android:name="android.support.FILE_PROVIDER_PATHS"
+                android:resource="@xml/file_paths" />
+        </provider>
+
+        <!-- Home screen widget -->
+        <receiver
+            android:name=".widget.ProdiWidgetReceiver"
+            android:exported="true"
+            android:label="@string/widget_name">
+            <intent-filter>
+                <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
+            </intent-filter>
+            <meta-data
+                android:name="android.appwidget.provider"
+                android:resource="@xml/prodi_widget_info" />
+        </receiver>
 
     </application>
 

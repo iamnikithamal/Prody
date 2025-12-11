@@ -5,7 +5,6 @@ import android.app.NotificationChannel
 import android.app.NotificationManager
 import android.os.Build
 import androidx.work.Configuration
-import androidx.work.WorkManager
 import com.prody.prashant.ai.BuddhaAiService
 import com.prody.prashant.data.local.PreferencesManager
 import com.prody.prashant.data.local.ProdiDatabase
@@ -15,6 +14,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
+import timber.log.Timber
 
 /**
  * Application class for Prodi.
@@ -51,6 +51,10 @@ class ProdiApplication : Application(), Configuration.Provider {
         UserProgressRepository(database.userProgressDao())
     }
 
+    val dailyChallengeRepository: DailyChallengeRepository by lazy {
+        DailyChallengeRepository(database.dailyChallengeDao(), userProgressRepository)
+    }
+
     // AI Service - initialized lazily with API key from preferences
     var buddhaAiService: BuddhaAiService? = null
         private set
@@ -58,6 +62,15 @@ class ProdiApplication : Application(), Configuration.Provider {
     override fun onCreate() {
         super.onCreate()
         instance = this
+
+        // Initialize Timber for logging
+        if (BuildConfig.DEBUG) {
+            Timber.plant(Timber.DebugTree())
+        } else {
+            Timber.plant(ReleaseTree())
+        }
+
+        Timber.d("Prodi Application starting...")
 
         // Create notification channels
         createNotificationChannels()
@@ -165,5 +178,27 @@ class ProdiApplication : Application(), Configuration.Provider {
         const val CHANNEL_STREAK_REMINDER = "streak_reminder"
         const val CHANNEL_FUTURE_SELF = "future_self"
         const val CHANNEL_WISDOM = "wisdom"
+    }
+
+    /**
+     * Release tree that filters out debug and verbose logs,
+     * and reports errors/warnings to crash reporting service.
+     */
+    private class ReleaseTree : Timber.Tree() {
+        override fun isLoggable(tag: String?, priority: Int): Boolean {
+            return priority >= android.util.Log.INFO
+        }
+
+        override fun log(priority: Int, tag: String?, message: String, t: Throwable?) {
+            if (priority == android.util.Log.ERROR || priority == android.util.Log.WARN) {
+                // In production, you could send errors to a crash reporting service
+                // For now, just log to console
+                when (priority) {
+                    android.util.Log.ERROR -> android.util.Log.e(tag, message, t)
+                    android.util.Log.WARN -> android.util.Log.w(tag, message, t)
+                    else -> android.util.Log.i(tag, message)
+                }
+            }
+        }
     }
 }

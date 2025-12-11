@@ -7,7 +7,12 @@ import androidx.room.RoomDatabase
 import androidx.room.TypeConverters
 import androidx.sqlite.db.SupportSQLiteDatabase
 import com.prody.prashant.data.local.converter.Converters
-import com.prody.prashant.data.local.dao.*
+import com.prody.prashant.data.local.dao.BuddhaDao
+import com.prody.prashant.data.local.dao.DailyChallengeDao
+import com.prody.prashant.data.local.dao.FutureSelfDao
+import com.prody.prashant.data.local.dao.JournalDao
+import com.prody.prashant.data.local.dao.UserProgressDao
+import com.prody.prashant.data.local.dao.VocabularyDao
 import com.prody.prashant.data.local.entity.*
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -24,9 +29,10 @@ import kotlinx.coroutines.launch
         DailyActivityEntity::class,
         UserStatsEntity::class,
         BadgeEntity::class,
-        XpTransactionEntity::class
+        XpTransactionEntity::class,
+        DailyChallengeEntity::class
     ],
-    version = 1,
+    version = 2,
     exportSchema = true
 )
 @TypeConverters(Converters::class)
@@ -37,6 +43,7 @@ abstract class ProdiDatabase : RoomDatabase() {
     abstract fun futureSelfDao(): FutureSelfDao
     abstract fun buddhaDao(): BuddhaDao
     abstract fun userProgressDao(): UserProgressDao
+    abstract fun dailyChallengeDao(): DailyChallengeDao
 
     companion object {
         private const val DATABASE_NAME = "prodi_database"
@@ -517,6 +524,278 @@ abstract class ProdiDatabase : RoomDatabase() {
                 example = "You've been quiet all evening - a penny for your thoughts?",
                 type = VocabularyType.IDIOM,
                 category = "general"
+            ),
+
+            // Additional Philosophical Words
+            VocabularyEntity(
+                word = "Eudaimonia",
+                meaning = "Human flourishing or well-being; living in accordance with virtue and realizing one's full potential.",
+                example = "For Aristotle, eudaimonia was the highest human good, achieved through virtuous living.",
+                type = VocabularyType.WORD,
+                category = "philosophy",
+                origin = "Greek"
+            ),
+            VocabularyEntity(
+                word = "Kairos",
+                meaning = "The opportune or decisive moment; the right time for action distinct from chronological time.",
+                example = "She recognized the kairos and seized the opportunity that would change her life.",
+                type = VocabularyType.WORD,
+                category = "philosophy",
+                origin = "Greek"
+            ),
+            VocabularyEntity(
+                word = "Praxis",
+                meaning = "Practical action informed by theory; the process of putting ideas into practice.",
+                example = "True wisdom is not just knowledge but praxis - putting understanding into action.",
+                type = VocabularyType.WORD,
+                category = "philosophy",
+                origin = "Greek"
+            ),
+            VocabularyEntity(
+                word = "Sonder",
+                meaning = "The realization that each passerby has a life as vivid and complex as your own.",
+                example = "Looking at the crowded street, he felt sonder wash over him - each person carrying their own universe.",
+                type = VocabularyType.WORD,
+                category = "existential",
+                origin = "Modern"
+            ),
+            VocabularyEntity(
+                word = "Kintsugi",
+                meaning = "The Japanese art of repairing broken pottery with gold; embracing flaws and imperfections as part of history.",
+                example = "She saw her failures through the lens of kintsugi - they made her stronger, not weaker.",
+                type = VocabularyType.WORD,
+                category = "zen",
+                origin = "Japanese"
+            ),
+            VocabularyEntity(
+                word = "Arete",
+                meaning = "Excellence or virtue; fulfilling one's purpose and being the best version of oneself.",
+                example = "The athlete pursued arete in every aspect of training, not just physical but mental and moral.",
+                type = VocabularyType.WORD,
+                category = "philosophy",
+                origin = "Greek"
+            ),
+            VocabularyEntity(
+                word = "Samadhi",
+                meaning = "A state of intense concentration achieved through meditation; union of subject and object.",
+                example = "Through years of practice, the monk finally experienced samadhi during his meditation.",
+                type = VocabularyType.WORD,
+                category = "vedic",
+                origin = "Sanskrit"
+            ),
+            VocabularyEntity(
+                word = "Ikigai",
+                meaning = "A Japanese concept meaning 'reason for being'; what gives life meaning and purpose.",
+                example = "After retirement, she found her ikigai in teaching philosophy to young people.",
+                type = VocabularyType.WORD,
+                category = "zen",
+                origin = "Japanese"
+            ),
+
+            // More Stoic Quotes
+            VocabularyEntity(
+                word = "The impediment to action advances action. What stands in the way becomes the way.",
+                meaning = "Obstacles are opportunities; the very things that block us can become the means of our progress.",
+                type = VocabularyType.QUOTE,
+                category = "stoicism",
+                author = "Marcus Aurelius"
+            ),
+            VocabularyEntity(
+                word = "Waste no more time arguing about what a good man should be. Be one.",
+                meaning = "Philosophy without action is empty; true understanding manifests in how we live, not what we debate.",
+                type = VocabularyType.QUOTE,
+                category = "stoicism",
+                author = "Marcus Aurelius"
+            ),
+            VocabularyEntity(
+                word = "It is not that we have a short time to live, but that we waste a lot of it.",
+                meaning = "Life is long enough if well-used; our sense of time scarcity comes from squandering our hours.",
+                type = VocabularyType.QUOTE,
+                category = "stoicism",
+                author = "Seneca"
+            ),
+            VocabularyEntity(
+                word = "He who fears death will never do anything worthy of a living man.",
+                meaning = "Fear of death paralyzes us; accepting mortality frees us to live fully and courageously.",
+                type = VocabularyType.QUOTE,
+                category = "stoicism",
+                author = "Seneca"
+            ),
+            VocabularyEntity(
+                word = "Don't explain your philosophy. Embody it.",
+                meaning = "Actions speak louder than words; the truest expression of wisdom is how we live each moment.",
+                type = VocabularyType.QUOTE,
+                category = "stoicism",
+                author = "Epictetus"
+            ),
+
+            // Carl Jung Quotes
+            VocabularyEntity(
+                word = "I am not what happened to me, I am what I choose to become.",
+                meaning = "Our past shapes us but doesn't determine us; we have the power to define who we become.",
+                type = VocabularyType.QUOTE,
+                category = "psychology",
+                author = "Carl Jung"
+            ),
+            VocabularyEntity(
+                word = "Who looks outside, dreams; who looks inside, awakes.",
+                meaning = "External seeking leads to fantasy; true awakening comes from inner exploration and self-knowledge.",
+                type = VocabularyType.QUOTE,
+                category = "psychology",
+                author = "Carl Jung"
+            ),
+            VocabularyEntity(
+                word = "Everything that irritates us about others can lead us to an understanding of ourselves.",
+                meaning = "Our reactions to others mirror our own unconscious; irritation reveals our shadow projections.",
+                type = VocabularyType.QUOTE,
+                category = "psychology",
+                author = "Carl Jung"
+            ),
+            VocabularyEntity(
+                word = "The meeting of two personalities is like the contact of two chemical substances: if there is any reaction, both are transformed.",
+                meaning = "Genuine encounters change both parties; every real meeting is an opportunity for mutual transformation.",
+                type = VocabularyType.QUOTE,
+                category = "psychology",
+                author = "Carl Jung"
+            ),
+
+            // Buddhist Wisdom
+            VocabularyEntity(
+                word = "In the end, only three things matter: how much you loved, how gently you lived, and how gracefully you let go.",
+                meaning = "Life's meaning lies not in accumulation but in love, kindness, and the wisdom of non-attachment.",
+                type = VocabularyType.QUOTE,
+                category = "buddhism",
+                author = "Buddha"
+            ),
+            VocabularyEntity(
+                word = "You yourself, as much as anybody in the entire universe, deserve your love and affection.",
+                meaning = "Self-compassion is not selfishness; caring for yourself is the foundation of caring for others.",
+                type = VocabularyType.QUOTE,
+                category = "buddhism",
+                author = "Buddha"
+            ),
+            VocabularyEntity(
+                word = "Every morning we are born again. What we do today is what matters most.",
+                meaning = "Each day offers fresh beginning; the past is gone, and this moment is where life unfolds.",
+                type = VocabularyType.QUOTE,
+                category = "buddhism",
+                author = "Buddha"
+            ),
+
+            // More Proverbs
+            VocabularyEntity(
+                word = "A smooth sea never made a skilled sailor.",
+                meaning = "Challenges and difficulties are essential for growth; comfort zones limit our development.",
+                type = VocabularyType.PROVERB,
+                category = "wisdom",
+                author = "English Proverb"
+            ),
+            VocabularyEntity(
+                word = "When the winds of change blow, some build walls while others build windmills.",
+                meaning = "Change can be a threat or opportunity depending on our response; wisdom lies in adaptation.",
+                type = VocabularyType.PROVERB,
+                category = "wisdom",
+                author = "Chinese Proverb"
+            ),
+            VocabularyEntity(
+                word = "The wound is the place where the light enters you.",
+                meaning = "Our deepest pain can become our greatest source of wisdom and compassion.",
+                type = VocabularyType.QUOTE,
+                category = "sufism",
+                author = "Rumi"
+            ),
+            VocabularyEntity(
+                word = "What you seek is seeking you.",
+                meaning = "Our deepest desires reflect something in the universe calling to us; longing is mutual.",
+                type = VocabularyType.QUOTE,
+                category = "sufism",
+                author = "Rumi"
+            ),
+            VocabularyEntity(
+                word = "Yesterday I was clever, so I wanted to change the world. Today I am wise, so I am changing myself.",
+                meaning = "True change begins within; maturity recognizes we can only transform the world by transforming ourselves.",
+                type = VocabularyType.QUOTE,
+                category = "sufism",
+                author = "Rumi"
+            ),
+
+            // More Idioms
+            VocabularyEntity(
+                word = "Break a leg",
+                meaning = "A way to wish someone good luck, especially before a performance.",
+                example = "Before her speech, her mentor said 'Break a leg!' with an encouraging smile.",
+                type = VocabularyType.IDIOM,
+                category = "general"
+            ),
+            VocabularyEntity(
+                word = "Every cloud has a silver lining",
+                meaning = "Even difficult situations contain some positive aspects or opportunities.",
+                example = "Losing that job was devastating, but every cloud has a silver lining - it led me to my true calling.",
+                type = VocabularyType.IDIOM,
+                category = "general"
+            ),
+            VocabularyEntity(
+                word = "The ball is in your court",
+                meaning = "It is your decision or responsibility to take the next action.",
+                example = "I've made my position clear; now the ball is in your court.",
+                type = VocabularyType.IDIOM,
+                category = "general"
+            ),
+            VocabularyEntity(
+                word = "Bite the bullet",
+                meaning = "To endure a painful or difficult situation with courage.",
+                example = "Sometimes you just have to bite the bullet and have that difficult conversation.",
+                type = VocabularyType.IDIOM,
+                category = "general"
+            ),
+            VocabularyEntity(
+                word = "Let the cat out of the bag",
+                meaning = "To accidentally reveal a secret.",
+                example = "She let the cat out of the bag about the surprise party.",
+                type = VocabularyType.IDIOM,
+                category = "general"
+            ),
+
+            // Latin Phrases
+            VocabularyEntity(
+                word = "Carpe Diem",
+                meaning = "Seize the day; make the most of present opportunities without excessive worry about the future.",
+                example = "With carpe diem as his motto, he never passed up a chance to learn something new.",
+                type = VocabularyType.PHRASE,
+                category = "philosophy",
+                origin = "Latin"
+            ),
+            VocabularyEntity(
+                word = "Cogito Ergo Sum",
+                meaning = "I think, therefore I am; the foundation of modern philosophy asserting that thinking proves existence.",
+                example = "Descartes' cogito ergo sum remains a cornerstone of philosophical inquiry.",
+                type = VocabularyType.PHRASE,
+                category = "philosophy",
+                origin = "Latin"
+            ),
+            VocabularyEntity(
+                word = "Tempus Fugit",
+                meaning = "Time flies; a reminder of time's swift passage and the importance of using it wisely.",
+                example = "Tempus fugit - before she knew it, twenty years had passed since graduation.",
+                type = VocabularyType.PHRASE,
+                category = "philosophy",
+                origin = "Latin"
+            ),
+            VocabularyEntity(
+                word = "Per Aspera Ad Astra",
+                meaning = "Through hardships to the stars; achievement comes through overcoming difficulties.",
+                example = "Per aspera ad astra - her journey from poverty to success embodied this ancient wisdom.",
+                type = VocabularyType.PHRASE,
+                category = "wisdom",
+                origin = "Latin"
+            ),
+            VocabularyEntity(
+                word = "Tabula Rasa",
+                meaning = "Blank slate; the idea that we begin life without preformed mental content.",
+                example = "Each new year offers us a tabula rasa, a fresh start to become who we want to be.",
+                type = VocabularyType.PHRASE,
+                category = "philosophy",
+                origin = "Latin"
             )
         )
     }

@@ -1,0 +1,4 @@
+# Keystore placeholder
+# The keystore is generated during CI/CD build process.
+# For local builds, generate using:
+# keytool -genkeypair -v -storetype PKCS12 -keystore prody-release.jks -keyalg RSA -keysize 2048 -validity 10000 -alias prody -storepass prody2024 -keypass prody2024 -dname "CN=Prody, OU=Development, O=Prody, L=Unknown, ST=Unknown, C=US"
