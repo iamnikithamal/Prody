@@ -170,7 +170,7 @@ fun SettingsAiScreen(
                     },
                     leadingContent = {
                         Icon(
-                            imageVector = Icons.AutoMirrored.Default.Notes,
+                            imageVector = Icons.Default.Notes,
                             contentDescription = null,
                             tint = MaterialTheme.colorScheme.onSurfaceVariant
                         )

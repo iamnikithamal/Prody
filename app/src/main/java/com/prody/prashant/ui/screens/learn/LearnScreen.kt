@@ -174,7 +174,7 @@ fun LearnScreen(
                 }
                 item {
                     CategoryCard(
-                        icon = Icons.AutoMirrored.Default.TextSnippet,
+                        icon = Icons.Default.TextSnippet,
                         title = "Phrases",
                         subtitle = "Sayings",
                         onClick = { onNavigateToVocabularyList("phrase") }
@@ -445,7 +445,7 @@ private fun VocabularyListItem(
                         VocabularyType.QUOTE -> Icons.Default.FormatQuote
                         VocabularyType.PROVERB -> Icons.Default.AutoStories
                         VocabularyType.IDIOM -> Icons.Default.Lightbulb
-                        VocabularyType.PHRASE -> Icons.AutoMirrored.Default.TextSnippet
+                        VocabularyType.PHRASE -> Icons.Default.TextSnippet
                     },
                     contentDescription = null,
                     tint = MaterialTheme.colorScheme.primary,
