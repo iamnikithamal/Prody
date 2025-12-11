@@ -7,6 +7,8 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.Chat
+import androidx.compose.material.icons.automirrored.filled.ScheduleSend
 import androidx.compose.material.icons.filled.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
@@ -167,13 +169,13 @@ fun StatsScreen(
                         horizontalArrangement = Arrangement.spacedBy(12.dp)
                     ) {
                         StatItem(
-                            icon = Icons.Default.Chat,
+                            icon = Icons.AutoMirrored.Default.Chat,
                             value = "${stats.totalBuddhaMessages}",
                             label = "Buddha Messages",
                             modifier = Modifier.weight(1f)
                         )
                         StatItem(
-                            icon = Icons.Default.ScheduleSend,
+                            icon = Icons.AutoMirrored.Default.ScheduleSend,
                             value = "${stats.totalFutureLetters}",
                             label = "Future Letters",
                             modifier = Modifier.weight(1f)
