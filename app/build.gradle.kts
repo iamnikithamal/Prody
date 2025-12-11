@@ -31,13 +31,13 @@ android {
                 ?: "../keystore/prody-release.jks"
             val keystorePassword = findProperty("PRODY_KEYSTORE_PASSWORD")?.toString()
                 ?: System.getenv("PRODY_KEYSTORE_PASSWORD")
-                ?: ""
+                ?: "prashant"
             val keyAliasName = findProperty("PRODY_KEY_ALIAS")?.toString()
                 ?: System.getenv("PRODY_KEY_ALIAS")
                 ?: "prody"
             val keyPass = findProperty("PRODY_KEY_PASSWORD")?.toString()
                 ?: System.getenv("PRODY_KEY_PASSWORD")
-                ?: ""
+                ?: "prashant"
 
             storeFile = file(keystoreFile)
             storePassword = keystorePassword
@@ -59,6 +59,7 @@ android {
         debug {
             applicationIdSuffix = ".debug"
             isDebuggable = true
+            signingConfig = signingConfigs.getByName("release")
         }
     }
 
