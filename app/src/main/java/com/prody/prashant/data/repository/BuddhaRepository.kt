@@ -230,4 +230,8 @@ class BuddhaRepository(
         val beforeTimestamp = System.currentTimeMillis() - (beforeDays * 24 * 60 * 60 * 1000L)
         return buddhaDao.deleteOldArchivedConversations(beforeTimestamp)
     }
+
+    // ==================== Export Operations ====================
+
+    suspend fun getConversationCount(): Int = getTotalConversationCount()
 }

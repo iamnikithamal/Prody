@@ -2,6 +2,10 @@ package com.prody.prashant.notification
 
 import android.content.Context
 import androidx.work.*
+import com.prody.prashant.ProdiApplication
+import kotlinx.coroutines.runBlocking
+import timber.log.Timber
+import java.util.Calendar
 import java.util.concurrent.TimeUnit
 
 /**
@@ -171,6 +175,7 @@ class DailyReminderWorker(
 
 /**
  * Worker for streak reminder notifications.
+ * Only shows notification if user hasn't been active today and has a streak.
  */
 class StreakReminderWorker(
     context: Context,
@@ -178,10 +183,44 @@ class StreakReminderWorker(
 ) : Worker(context, params) {
 
     override fun doWork(): Result {
-        // Check if user has been active today
-        // If not, show streak reminder
-        NotificationHelper.showStreakReminderNotification(applicationContext)
-        return Result.success()
+        return try {
+            val app = applicationContext.applicationContext as? ProdiApplication
+            if (app == null) {
+                Timber.e("StreakReminderWorker: Could not get ProdiApplication")
+                return Result.failure()
+            }
+
+            runBlocking {
+                val userStats = app.userProgressRepository.getUserStats()
+                val currentStreak = userStats?.currentStreak ?: 0
+
+                // Only remind if user has an existing streak to protect
+                if (currentStreak > 0) {
+                    val todayActivity = app.userProgressRepository.getTodayActivity()
+                    val hasActivityToday = todayActivity.wordsLearned > 0 ||
+                            todayActivity.journalEntries > 0 ||
+                            todayActivity.buddhaMessages > 0 ||
+                            todayActivity.futureLettersWritten > 0 ||
+                            todayActivity.totalActiveTimeSeconds > 60 // At least 1 minute active
+
+                    if (!hasActivityToday) {
+                        Timber.d("Showing streak reminder - user has $currentStreak day streak but no activity today")
+                        NotificationHelper.showStreakReminderNotification(
+                            applicationContext,
+                            currentStreak
+                        )
+                    } else {
+                        Timber.d("Skipping streak reminder - user was active today")
+                    }
+                } else {
+                    Timber.d("Skipping streak reminder - user has no active streak")
+                }
+            }
+            Result.success()
+        } catch (e: Exception) {
+            Timber.e(e, "StreakReminderWorker failed")
+            Result.failure()
+        }
     }
 }
 

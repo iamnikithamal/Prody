@@ -210,4 +210,8 @@ class FutureSelfRepository(
         val diff = nextLetter.deliveryDate - now
         return (diff / (24 * 60 * 60 * 1000)).toInt()
     }
+
+    // ==================== Export Operations ====================
+
+    suspend fun getTotalLetterCount(): Int = futureSelfDao.getTotalLetterCount()
 }

@@ -1,5 +1,6 @@
 package com.prody.prashant
 
+import android.content.Intent
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
@@ -15,12 +16,18 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.prody.prashant.navigation.ProdiDestinations
+import com.prody.prashant.notification.NotificationActionReceiver
 import com.prody.prashant.ui.screens.MainScreen
 import com.prody.prashant.ui.screens.onboarding.OnboardingScreen
 import com.prody.prashant.ui.theme.ProdiTheme
 import kotlinx.coroutines.delay
+import timber.log.Timber
 
 class MainActivity : ComponentActivity() {
+
+    // Deep link destination from notification
+    private var pendingDestination: String? = null
+    private var pendingEntityId: Long = -1L
 
     override fun onCreate(savedInstanceState: Bundle?) {
         // Handle splash screen
@@ -29,6 +36,9 @@ class MainActivity : ComponentActivity() {
 
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
+
+        // Process any deep link intent
+        handleDeepLinkIntent(intent)
 
         setContent {
             ProdiTheme {
@@ -51,9 +61,43 @@ class MainActivity : ComponentActivity() {
                             ProdiDestinations.MAIN
                         } else {
                             ProdiDestinations.ONBOARDING
+                        },
+                        initialDeepLinkDestination = if (hasCompletedOnboarding == true) pendingDestination else null,
+                        initialEntityId = if (hasCompletedOnboarding == true) pendingEntityId else -1L,
+                        onDeepLinkConsumed = {
+                            pendingDestination = null
+                            pendingEntityId = -1L
                         }
                     )
                 }
+            }
+        }
+    }
+
+    override fun onNewIntent(intent: Intent) {
+        super.onNewIntent(intent)
+        handleDeepLinkIntent(intent)
+    }
+
+    /**
+     * Processes deep link information from the intent.
+     */
+    private fun handleDeepLinkIntent(intent: Intent?) {
+        intent?.let {
+            val destination = it.getStringExtra(NotificationActionReceiver.EXTRA_DESTINATION)
+            val entityId = it.getLongExtra(NotificationActionReceiver.EXTRA_ENTITY_ID, -1L)
+
+            if (destination != null) {
+                Timber.d("Deep link received: destination=$destination, entityId=$entityId")
+                pendingDestination = destination
+                pendingEntityId = entityId
+            }
+
+            // Also check for legacy "destination" extra
+            val legacyDestination = it.getStringExtra("destination")
+            if (legacyDestination != null && destination == null) {
+                Timber.d("Legacy deep link received: $legacyDestination")
+                pendingDestination = legacyDestination
             }
         }
     }
@@ -61,7 +105,10 @@ class MainActivity : ComponentActivity() {
 
 @Composable
 fun ProdiApp(
-    startDestination: String
+    startDestination: String,
+    initialDeepLinkDestination: String? = null,
+    initialEntityId: Long = -1L,
+    onDeepLinkConsumed: () -> Unit = {}
 ) {
     val navController = rememberNavController()
 
@@ -86,7 +133,11 @@ fun ProdiApp(
             }
 
             composable(ProdiDestinations.MAIN) {
-                MainScreen()
+                MainScreen(
+                    initialDeepLinkDestination = initialDeepLinkDestination,
+                    initialEntityId = initialEntityId,
+                    onDeepLinkConsumed = onDeepLinkConsumed
+                )
             }
         }
     }

@@ -189,6 +189,11 @@ interface JournalDao {
 
     @Query("SELECT aiSummary FROM journal_entries WHERE aiSummary IS NOT NULL ORDER BY createdAt DESC LIMIT :limit")
     suspend fun getRecentSummaries(limit: Int = 5): List<String>
+
+    // ==================== Export ====================
+
+    @Query("SELECT * FROM journal_entries ORDER BY createdAt DESC")
+    suspend fun getAll(): List<JournalEntity>
 }
 
 data class MoodCount(

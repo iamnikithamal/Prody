@@ -321,6 +321,51 @@ interface UserProgressDao {
 
     @Query("SELECT COUNT(DISTINCT date) FROM daily_activity WHERE totalActiveTimeSeconds > 0")
     fun observeTotalActiveDays(): Flow<Int>
+
+    // ==================== Reset/Clear Operations ====================
+
+    @Query("DELETE FROM daily_activity")
+    suspend fun clearAllDailyActivities()
+
+    @Query("DELETE FROM xp_transactions")
+    suspend fun clearAllXpTransactions()
+
+    @Query("UPDATE badges SET isEarned = 0, earnedAt = NULL, progress = 0")
+    suspend fun resetAllBadges()
+
+    @Query("""
+        UPDATE user_stats SET
+            level = 1,
+            currentXp = 0,
+            totalXp = 0,
+            levelTitle = 'NOVICE',
+            currentStreak = 0,
+            longestStreak = 0,
+            lastActiveDate = NULL,
+            streakStartDate = NULL,
+            totalWordsLearned = 0,
+            totalWordsMastered = 0,
+            totalJournalEntries = 0,
+            totalJournalWords = 0,
+            totalBuddhaConversations = 0,
+            totalBuddhaMessages = 0,
+            totalFutureLetters = 0,
+            totalFutureLettersOpened = 0,
+            totalCommitmentsKept = 0,
+            totalLearningTime = 0,
+            totalJournalingTime = 0,
+            totalBuddhaTime = 0,
+            totalActiveTime = 0,
+            totalDaysActive = 0,
+            badgesEarned = '',
+            unlockedAvatars = 'default',
+            unlockedBanners = 'default',
+            avatarId = 'default',
+            bannerId = 'default',
+            updatedAt = :timestamp
+        WHERE id = 1
+    """)
+    suspend fun resetUserProgress(timestamp: Long = System.currentTimeMillis())
 }
 
 data class XpBySource(

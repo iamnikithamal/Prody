@@ -198,4 +198,10 @@ class JournalRepository(
         }
         return streak
     }
+
+    // ==================== Export Operations ====================
+
+    suspend fun getTotalJournalCount(): Int = journalDao.getTotalCount()
+
+    suspend fun getAllJournals(): List<JournalEntity> = journalDao.getAll()
 }

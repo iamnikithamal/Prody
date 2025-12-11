@@ -190,4 +190,10 @@ class VocabularyRepository(
         vocabularyDao.getAllByType(type)
 
     suspend fun getByIds(ids: List<Long>): List<VocabularyEntity> = vocabularyDao.getByIds(ids)
+
+    // ==================== Export Operations ====================
+
+    suspend fun getTotalVocabularyCount(): Int = vocabularyDao.getTotalCount()
+
+    suspend fun getAllVocabulary(): List<VocabularyEntity> = vocabularyDao.getAll()
 }

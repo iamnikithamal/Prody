@@ -212,5 +212,6 @@ enum class XpSource(val displayName: String, val baseXp: Int) {
     DAILY_LOGIN("Daily Login", 5),
     STREAK_BONUS("Streak Bonus", 10), // Per day of streak
     BADGE_EARNED("Badge Earned", 0), // Variable based on badge
-    LEVEL_UP("Level Up", 0) // Celebration, no XP
+    LEVEL_UP("Level Up", 0), // Celebration, no XP
+    CHALLENGE_COMPLETED("Challenge Completed", 0) // Variable based on challenge
 }

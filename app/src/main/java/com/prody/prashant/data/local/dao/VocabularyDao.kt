@@ -179,4 +179,12 @@ interface VocabularyDao {
 
     @Query("SELECT * FROM vocabulary WHERE id IN (:ids)")
     suspend fun getByIds(ids: List<Long>): List<VocabularyEntity>
+
+    // ==================== Export ====================
+
+    @Query("SELECT COUNT(*) FROM vocabulary")
+    suspend fun getTotalCount(): Int
+
+    @Query("SELECT * FROM vocabulary ORDER BY createdAt DESC")
+    suspend fun getAll(): List<VocabularyEntity>
 }
