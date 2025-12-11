@@ -27,6 +27,8 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.prody.prashant.ProdiApplication
 import com.prody.prashant.data.local.entity.BadgeEntity
 import com.prody.prashant.data.local.entity.UserStatsEntity
+import com.prody.prashant.data.local.entity.LevelTitle
+import com.prody.prashant.data.local.entity.BadgeTier
 
 /**
  * Profile screen showing user stats, badges, and customization options.
@@ -152,7 +154,7 @@ private fun ProfileHeader(
                     contentAlignment = Alignment.Center
                 ) {
                     Icon(
-                        imageVector = getAvatarIcon(userStats?.currentAvatar),
+                        imageVector = getAvatarIcon(userStats?.avatarId),
                         contentDescription = null,
                         modifier = Modifier.size(60.dp),
                         tint = MaterialTheme.colorScheme.primary
@@ -258,8 +260,8 @@ private fun LevelProgressCard(stats: UserStatsEntity) {
 
             // Progress to next level
             val nextLevelXp = stats.levelTitle.ordinal.let { currentOrdinal ->
-                if (currentOrdinal < com.prody.prashant.data.local.entity.LevelTitle.entries.size - 1) {
-                    com.prody.prashant.data.local.entity.LevelTitle.entries[currentOrdinal + 1].minXp
+                if (currentOrdinal < LevelTitle.entries.size - 1) {
+                    LevelTitle.entries[currentOrdinal + 1].minXp
                 } else {
                     stats.totalXp
                 }
@@ -444,11 +446,11 @@ private fun BadgesSection(
 @Composable
 private fun BadgeChip(badge: BadgeEntity) {
     val tierColor = when (badge.tier) {
-        com.prody.prashant.data.local.entity.BadgeTier.BRONZE -> Color(0xFFCD7F32)
-        com.prody.prashant.data.local.entity.BadgeTier.SILVER -> Color(0xFFC0C0C0)
-        com.prody.prashant.data.local.entity.BadgeTier.GOLD -> Color(0xFFFFD700)
-        com.prody.prashant.data.local.entity.BadgeTier.PLATINUM -> Color(0xFFE5E4E2)
-        com.prody.prashant.data.local.entity.BadgeTier.DIAMOND -> Color(0xFFB9F2FF)
+        BadgeTier.BRONZE -> Color(0xFFCD7F32)
+        BadgeTier.SILVER -> Color(0xFFC0C0C0)
+        BadgeTier.GOLD -> Color(0xFFFFD700)
+        BadgeTier.PLATINUM -> Color(0xFFE5E4E2)
+        BadgeTier.DIAMOND -> Color(0xFFB9F2FF)
     }
 
     Card(
@@ -505,7 +507,7 @@ private fun AchievementsSummary(stats: UserStatsEntity) {
             AchievementRow(
                 icon = Icons.Default.Timer,
                 title = "Total Learning Time",
-                value = formatMinutes(stats.totalLearningTimeMinutes)
+                value = formatMinutes(stats.totalLearningTime)
             )
             AchievementRow(
                 icon = Icons.Default.LocalFireDepartment,

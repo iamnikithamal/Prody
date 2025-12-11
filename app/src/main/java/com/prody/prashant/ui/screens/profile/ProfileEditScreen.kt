@@ -45,8 +45,8 @@ fun ProfileEditScreen(
 
     var displayName by remember(userStats) { mutableStateOf(userStats?.displayName ?: "") }
     var bio by remember(userStats) { mutableStateOf(userStats?.bio ?: "") }
-    var selectedAvatar by remember(userStats) { mutableStateOf(userStats?.currentAvatar ?: "default") }
-    var selectedBanner by remember(userStats) { mutableStateOf(userStats?.currentBanner ?: "default") }
+    var selectedAvatar by remember(userStats) { mutableStateOf(userStats?.avatarId ?: "default") }
+    var selectedBanner by remember(userStats) { mutableStateOf(userStats?.bannerId ?: "default") }
 
     var isSaving by remember { mutableStateOf(false) }
 
