@@ -52,15 +52,22 @@ jobs:
       - name: Create keystore directory
         run: mkdir -p keystore
 
-      - name: Generate release keystore
+      - name: Decode and setup release keystore
+        env:
+          KEYSTORE_BASE64: ${{ secrets.PRODY_KEYSTORE_BASE64 }}
+          KEYSTORE_PASSWORD: ${{ secrets.PRODY_KEYSTORE_PASSWORD }}
+          KEY_PASSWORD: ${{ secrets.PRODY_KEY_PASSWORD }}
         run: |
-          keytool -genkeypair -v -storetype PKCS12 \
-            -keystore keystore/prody-release.jks \
-            -keyalg RSA -keysize 2048 -validity 10000 \
-            -alias prody \
-            -storepass prody2024 \
-            -keypass prody2024 \
-            -dname "CN=Prody, OU=Development, O=Prody, L=Unknown, ST=Unknown, C=US"
+          if [ -z "$KEYSTORE_BASE64" ]; then
+            echo "⚠️ Warning: KEYSTORE_BASE64 secret not found. Skipping keystore setup."
+            echo "To configure signing:"
+            echo "1. Generate keystore: keytool -genkeypair -v -storetype PKCS12 -keystore prody-release.jks ..."
+            echo "2. Encode to base64: base64 -w 0 prody-release.jks"
+            echo "3. Add secrets to GitHub repository: PRODY_KEYSTORE_BASE64, PRODY_KEYSTORE_PASSWORD, PRODY_KEY_PASSWORD"
+            exit 1
+          fi
+          echo "$KEYSTORE_BASE64" | base64 -d > keystore/prody-release.jks
+          chmod 600 keystore/prody-release.jks
 
       - name: Build Release APK
         run: ./gradlew --no-daemon --stacktrace --build-cache assembleRelease

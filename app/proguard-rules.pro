@@ -33,7 +33,7 @@
 }
 
 # Keep Room entities
--keep class com.prody.prashant.data.local.entities.** { *; }
+-keep class com.prody.prashant.data.local.entity.** { *; }
 
 # Keep Gemini AI
 -keep class com.google.ai.client.generativeai.** { *; }
