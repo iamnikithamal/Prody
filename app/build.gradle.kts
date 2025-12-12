@@ -28,16 +28,16 @@ android {
         create("release") {
             val keystoreFile = findProperty("PRODY_KEYSTORE_FILE")?.toString()
                 ?: System.getenv("PRODY_KEYSTORE_FILE")
-                ?: "../keystore/prody-release.jks"
+                ?: "keystore/prody-release.jks"
             val keystorePassword = findProperty("PRODY_KEYSTORE_PASSWORD")?.toString()
                 ?: System.getenv("PRODY_KEYSTORE_PASSWORD")
-                ?: "prashant"
+                ?: error("PRODY_KEYSTORE_PASSWORD not set. Please set the environment variable PRODY_KEYSTORE_PASSWORD or provide it via -PPRODY_KEYSTORE_PASSWORD")
             val keyAliasName = findProperty("PRODY_KEY_ALIAS")?.toString()
                 ?: System.getenv("PRODY_KEY_ALIAS")
                 ?: "prody"
             val keyPass = findProperty("PRODY_KEY_PASSWORD")?.toString()
                 ?: System.getenv("PRODY_KEY_PASSWORD")
-                ?: "prashant"
+                ?: error("PRODY_KEY_PASSWORD not set. Please set the environment variable PRODY_KEY_PASSWORD or provide it via -PPRODY_KEY_PASSWORD")
 
             storeFile = file(keystoreFile)
             storePassword = keystorePassword
