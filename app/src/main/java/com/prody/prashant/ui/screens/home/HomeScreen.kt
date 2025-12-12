@@ -10,7 +10,9 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.ArrowForward
 import androidx.compose.material.icons.automirrored.filled.MenuBook
+import androidx.compose.material.icons.automirrored.filled.ScheduleSend
 import androidx.compose.material.icons.filled.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
@@ -204,8 +206,9 @@ private fun StatsRow(
             )
         }
         item {
+            @Suppress("DEPRECATION")
             StatCard(
-                icon = Icons.Default.TrendingUp,
+                icon = Icons.Filled.TrendingUp,
                 value = "Lvl $level",
                 label = "Level",
                 color = MaterialTheme.colorScheme.primary
@@ -371,7 +374,7 @@ private fun QuickActionsSection(
                 onClick = onBuddhaClick
             )
             QuickActionCard(
-                icon = Icons.Default.ScheduleSend,
+                icon = Icons.AutoMirrored.Default.ScheduleSend,
                 title = "Future Self",
                 subtitle = "Write",
                 modifier = Modifier.weight(1f),
@@ -560,7 +563,7 @@ private fun BuddhaCard(onClick: () -> Unit) {
                 )
             }
             Icon(
-                imageVector = Icons.Default.ArrowForward,
+                imageVector = Icons.AutoMirrored.Default.ArrowForward,
                 contentDescription = null,
                 tint = MaterialTheme.colorScheme.tertiary
             )

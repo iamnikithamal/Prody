@@ -6,6 +6,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
+import androidx.compose.material.icons.automirrored.filled.Chat
 import androidx.compose.material.icons.filled.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
@@ -307,7 +308,7 @@ fun JournalDetailScreen(
                     onClick = { onNavigateToBuddha(j.id) },
                     modifier = Modifier.fillMaxWidth()
                 ) {
-                    Icon(Icons.Default.Chat, contentDescription = null)
+                    Icon(Icons.AutoMirrored.Default.Chat, contentDescription = null)
                     Spacer(modifier = Modifier.width(8.dp))
                     Text("Discuss with Buddha")
                 }

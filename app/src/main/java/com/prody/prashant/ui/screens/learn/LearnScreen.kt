@@ -9,7 +9,9 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.ArrowForward
 import androidx.compose.material.icons.automirrored.filled.MenuBook
+import androidx.compose.material.icons.automirrored.filled.TextSnippet
 import androidx.compose.material.icons.filled.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
@@ -172,7 +174,7 @@ fun LearnScreen(
                 }
                 item {
                     CategoryCard(
-                        icon = Icons.Default.TextSnippet,
+                        icon = Icons.AutoMirrored.Filled.TextSnippet,
                         title = "Phrases",
                         subtitle = "Sayings",
                         onClick = { onNavigateToVocabularyList("phrase") }
@@ -348,7 +350,7 @@ private fun PracticeCard(
                 )
             }
             Icon(
-                imageVector = Icons.Default.ArrowForward,
+                imageVector = Icons.AutoMirrored.Default.ArrowForward,
                 contentDescription = null,
                 tint = MaterialTheme.colorScheme.tertiary
             )
@@ -443,7 +445,7 @@ private fun VocabularyListItem(
                         VocabularyType.QUOTE -> Icons.Default.FormatQuote
                         VocabularyType.PROVERB -> Icons.Default.AutoStories
                         VocabularyType.IDIOM -> Icons.Default.Lightbulb
-                        VocabularyType.PHRASE -> Icons.Default.TextSnippet
+                        VocabularyType.PHRASE -> Icons.AutoMirrored.Filled.TextSnippet
                     },
                     contentDescription = null,
                     tint = MaterialTheme.colorScheme.primary,
