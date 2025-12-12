@@ -207,6 +207,7 @@ private fun StatsRow(
         }
         item {
             StatCard(
+                @Suppress("DEPRECATION")
                 icon = Icons.Filled.TrendingUp,
                 value = "Lvl $level",
                 label = "Level",
